@@ -1,0 +1,1 @@
+rotate = pygame.transform.rotozoom(bird_surface,-bird_movement * 3,1)
