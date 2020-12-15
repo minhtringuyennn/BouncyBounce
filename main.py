@@ -40,16 +40,17 @@ def move_pipes(pipes):
 	return pipes
 
 def draw_pipes(pipes):
-	for pipe in pipes:
-		if pipe.bottom >= 1024:
-			screen.blit(pipe_surface, pipe)
-		else:
-			flip_pipe = pygame.transform.flip(pipe_surface, False, True)
-			screen.blit(flip_pipe, pipe)
+    for pipe in pipes:
+        if pipe.centerx > -100 and pipe.centerx < WIDTH + 100:
+            if pipe.bottom >= 1024:
+                screen.blit(pipe_surface, pipe)
+            else:
+                flip_pipe = pygame.transform.flip(pipe_surface, False, True)
+                screen.blit(flip_pipe, pipe)
 
 def remove_pipes(pipes):
 	for pipe in pipes:
-		if pipe.centerx == -600:
+		if pipe.centerx <= -50:
 			pipes.remove(pipe)
 
 	return pipes
@@ -88,7 +89,7 @@ bird_upflap = pygame.transform.scale2x(pygame.image.load('assets/sprites/yellowb
 bird_frames = [bird_downflap, bird_midflap, bird_upflap, bird_midflap]
 bird_index = 0
 bird_surface = bird_frames[bird_index]
-bird_rect = bird_surface.get_rect(center = (BIRD_X, HEIGHT/2))
+bird_rect = bird_surface.get_rect(center = (BIRD_X/2, HEIGHT/2))
 BIRDFLAP = pygame.USEREVENT
 pygame.time.set_timer(BIRDFLAP, 180)
 
@@ -142,6 +143,7 @@ while True:
 
     for pipe in pipe_list:
         if pipe.centerx == BIRD_X:
+            #if  ISDEAD == False:
             if check_collision(pipe_list) == False and ISDEAD == False:
                 score += 1
             else:
@@ -185,6 +187,8 @@ while True:
     draw_floor()
     if floor_x_pos < -WIDTH:
         floor_x_pos = 0
+
+    print(len(pipe_list))
 
     pygame.display.update()
     clock.tick(FRAMERATE)

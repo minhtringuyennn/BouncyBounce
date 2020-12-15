@@ -1,1 +1,2 @@
-rotate = pygame.transform.rotozoom(bird_surface,-bird_movement * 3,1)
+pygame.display.update()
+    clock.tick(FRAMERATE)
