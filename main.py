@@ -30,8 +30,8 @@ def draw_floor():
 
 def create_pipe():
 	random_pipe_pos = random.choice(pipe_height)
-	bottom_pipe = pipe_surface.get_rect(midtop = (700,random_pipe_pos))
-	top_pipe = pipe_surface.get_rect(midbottom = (700,random_pipe_pos - 300))
+	bottom_pipe = pipe_surface.get_rect(midtop = (700, random_pipe_pos))
+	top_pipe = pipe_surface.get_rect(midbottom = (700, random_pipe_pos - 300))
 	return bottom_pipe, top_pipe
 
 def move_pipes(pipes):
@@ -75,16 +75,16 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-bg_surface = pygame.image.load((r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/background-day.png')).convert()
+bg_surface = pygame.image.load(('assets/sprites/background-day.png')).convert()
 bg_surface = pygame.transform.scale2x(bg_surface)
 
-floor_surface = pygame.image.load(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/base.png').convert()
+floor_surface = pygame.image.load('assets/sprites/base.png').convert()
 floor_surface = pygame.transform.scale2x(floor_surface)
 floor_x_pos = 0
 
-bird_downflap = pygame.transform.scale2x(pygame.image.load(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/yellowbird-downflap.png').convert_alpha())
-bird_midflap = pygame.transform.scale2x(pygame.image.load(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/yellowbird-midflap.png').convert_alpha())
-bird_upflap = pygame.transform.scale2x(pygame.image.load(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/yellowbird-upflap.png').convert_alpha())
+bird_downflap = pygame.transform.scale2x(pygame.image.load('assets/sprites/yellowbird-downflap.png').convert_alpha())
+bird_midflap = pygame.transform.scale2x(pygame.image.load('assets/sprites/yellowbird-midflap.png').convert_alpha())
+bird_upflap = pygame.transform.scale2x(pygame.image.load('assets/sprites/yellowbird-upflap.png').convert_alpha())
 bird_frames = [bird_downflap, bird_midflap, bird_upflap, bird_midflap]
 bird_index = 0
 bird_surface = bird_frames[bird_index]
@@ -92,14 +92,13 @@ bird_rect = bird_surface.get_rect(center = (BIRD_X, HEIGHT/2))
 BIRDFLAP = pygame.USEREVENT
 pygame.time.set_timer(BIRDFLAP, 180)
 
-pipe_surface = pygame.image.load(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/assets/sprites/pipe-green.png')
-pipe_surface = pygame.transform.scale2x(pipe_surface)
+pipe_surface = pygame.transform.scale2x(pygame.image.load('assets/sprites/pipe-green.png').convert())
 pipe_list = []
 SPAWNPIPE = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNPIPE, TICK)
 pipe_height = [400, 500, 600, 700, 800]
 
-game_font = pygame.font.Font(r'C:/Users/MinhTriNguyen/OneDrive/Desktop/BouncyBounce/BouncyBounce/04B_19__.ttf', FONT_SIZE)
+game_font = pygame.font.Font('04B_19__.ttf', FONT_SIZE)
 
 #Run game
 while True:
@@ -132,13 +131,23 @@ while True:
 
     #Render gameplay
 
+    #Render BG
     screen.blit(bg_surface, (0,0))
 
+    #Pipes render
     if ISDEAD == False:
         pipe_list = move_pipes(pipe_list)
     pipe_list = remove_pipes(pipe_list)
     draw_pipes(pipe_list)
 
+    for pipe in pipe_list:
+        if pipe.centerx == BIRD_X:
+            if check_collision(pipe_list) == False and ISDEAD == False:
+                score += 1
+            else:
+                ISDEAD = True
+
+    #Bird render
     rotate = bird_surface
     flag = False
     if bird_rect.centery > SURFACE - 25 or bird_rect.centery < 25:
@@ -165,12 +174,7 @@ while True:
 
     screen.blit(rotate, bird_rect)
 
-    for pipe in pipe_list:
-        if pipe.centerx == BIRD_X:
-            if check_collision(pipe_list) == False and ISDEAD == False:
-                score += 1
-            else:
-                ISDEAD = True
+    #Score render
 
     score_surface = game_font.render(str(int(score/2)), True, (255,255,255))
     score_rect = score_surface.get_rect(center = (288,100))
